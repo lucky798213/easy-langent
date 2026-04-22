@@ -1,2 +1,5 @@
 langent-env/
 .env
+
+# PDF files
+ex/AI Interview Assistant/test.pdf
