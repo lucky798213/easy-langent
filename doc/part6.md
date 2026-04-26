@@ -97,7 +97,54 @@ def my_node(state: TaskState) -> None:
 
 ---
 
-## 四、快速参考
+## 四、条件边（Conditional Edges）
+
+条件边用于在节点之间添加路由逻辑，根据状态决定执行路径。
+
+### 4.1 基本语法
+
+```python
+builder.add_conditional_edges(
+    source,       # 必填：从哪个节点出发，字符串
+    path,         # 必填：路由函数，接收 state，必须返回字符串
+    path_map,     # 选填：字典，把路由函数返回值映射到节点名
+)
+```
+
+### 4.2 使用方式
+
+#### 方式一：不传 path_map（直接返回节点名）
+
+```python
+def decide(state):
+    if state.get("score", 0) > 80:
+        return "pass_node"
+    else:
+        return "retry_node"
+    # ← 必须和 add_node 时的名字完全一致
+
+builder.add_conditional_edges("judge", decide)
+```
+
+#### 方式二：传 path_map（返回值映射）
+
+```python
+def decide(state):
+    if state.get("score", 0) > 80:
+        return "high"   # 可以返回任意标识
+    else:
+        return "low"
+
+builder.add_conditional_edges(
+    "judge",
+    decide,
+    path_map={"high": "pass_node", "low": "retry_node"}  # 映射到实际节点
+)
+```
+
+---
+
+## 五、快速参考
 
 ```python
 from typing import TypedDict, NotRequired
